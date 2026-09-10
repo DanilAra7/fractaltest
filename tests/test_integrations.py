@@ -8,7 +8,12 @@ import sys
 import pytest
 
 from src.integrations.base import IntegrationError
-from src.integrations.sheets import SHEET_COLUMNS, _row, write_to_google_sheet
+from src.integrations.sheets import (
+    SHEET_COLUMNS,
+    _row,
+    normalize_spreadsheet_id,
+    write_to_google_sheet,
+)
 from src.integrations.telegram import TELEGRAM_MAX_LEN, build_digest_text
 from src.models import (
     ProcessedRequest,
@@ -131,3 +136,30 @@ class TestSheetsFailurePaths:
         pytest.importorskip("gspread")
         with pytest.raises(IntegrationError, match="креденшелів"):
             write_to_google_sheet(make_result([]), "fake-id", "no-such-file.json")
+
+
+class TestSpreadsheetIdNormalization:
+    """Реальний кейс: при першому налаштуванні в .env потрапив цілий URL
+    із адресного рядка, а не голий ID."""
+
+    def test_bare_id_passes_through(self):
+        assert normalize_spreadsheet_id("1AbC-dEf_123") == "1AbC-dEf_123"
+
+    def test_full_url_with_query_and_fragment(self):
+        url = "https://docs.google.com/spreadsheets/d/1AbC-dEf_123/edit?usp=sharing#gid=0"
+        assert normalize_spreadsheet_id(url) == "1AbC-dEf_123"
+
+    def test_url_without_edit_suffix(self):
+        url = "https://docs.google.com/spreadsheets/d/1AbC-dEf_123"
+        assert normalize_spreadsheet_id(url) == "1AbC-dEf_123"
+
+    def test_surrounding_whitespace_stripped(self):
+        assert normalize_spreadsheet_id("  1AbC-dEf_123  ") == "1AbC-dEf_123"
+
+    def test_empty_value_raises(self):
+        with pytest.raises(IntegrationError, match="порожній"):
+            normalize_spreadsheet_id("")
+
+    def test_garbage_raises_with_hint(self):
+        with pytest.raises(IntegrationError, match="Не можу дістати ID"):
+            normalize_spreadsheet_id("https://example.com/not-a-sheet")

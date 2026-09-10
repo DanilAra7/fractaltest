@@ -4,9 +4,9 @@
     "model": "mock-fixtures-v1",
     "prompt_version": "v1",
     "temperature": 0.0,
-    "started_at": "2026-09-10T17:31:38+00:00",
-    "finished_at": "2026-09-10T17:31:38+00:00",
-    "duration_seconds": 0.61,
+    "started_at": "2026-09-10T17:41:18+00:00",
+    "finished_at": "2026-09-10T17:41:18+00:00",
+    "duration_seconds": 0.0,
     "total_requests": 18,
     "ok": 18,
     "failed": 0
@@ -18,7 +18,7 @@
       "timestamp": "2026-06-08 09:14",
       "raw_text": "Привіт! Можна якось автоматизувати щотижневий звіт по Google Ads? Зараз руками вивантажую CSV і копіюю в табличку щопонеділка, займає десь годину. Треба основні метрики по кампаніях.",
       "status": "ok",
-      "attempts": 1,
+      "attempts": 0,
       "analysis": {
         "category": "звіт/аналітика",
         "target_department": "маркетинг",
@@ -37,7 +37,7 @@
         "language": "uk"
       },
       "error": null,
-      "from_cache": false
+      "from_cache": true
     },
     {
       "id": "REQ-002",
@@ -45,7 +45,7 @@
       "timestamp": "2026-06-08 09:31",
       "raw_text": "хлопці треба бот",
       "status": "ok",
-      "attempts": 2,
+      "attempts": 0,
       "analysis": {
         "category": "автоматизація",
         "target_department": null,
@@ -65,7 +65,7 @@
         "language": "uk"
       },
       "error": null,
-      "from_cache": false
+      "from_cache": true
     },
     {
       "id": "REQ-003",
@@ -73,7 +73,7 @@
       "timestamp": "2026-06-08 10:02",
       "raw_text": "Доброго дня. У відділі продажів накопичується багато транскриптів дзвінків з клієнтами. Хочемо, щоб по кожному дзвінку автоматично формувалося коротке саммарі + список домовленостей, і це падало в PlanFix у картку угоди. Це реально?",
       "status": "ok",
-      "attempts": 1,
+      "attempts": 0,
       "analysis": {
         "category": "автоматизація",
         "target_department": "продажі",
@@ -93,7 +93,7 @@
         "language": "uk"
       },
       "error": null,
-      "from_cache": false
+      "from_cache": true
     },
     {
       "id": "REQ-004",
@@ -101,7 +101,7 @@
       "timestamp": "2026-06-08 10:20",
       "raw_text": "Питання радше теоретичне: чи можна взагалі за допомогою AI оцінювати якість наших статей у блозі перед публікацією? Поки що нічого впроваджувати не треба, просто цікаво ваша думка.",
       "status": "ok",
-      "attempts": 1,
+      "attempts": 0,
       "analysis": {
         "category": "питання/консультація",
         "target_department": "маркетинг",
@@ -119,7 +119,7 @@
         "language": "uk"
       },
       "error": null,
-      "from_cache": false
+      "from_cache": true
     },
     {
       "id": "REQ-005",
@@ -127,7 +127,7 @@
       "timestamp": "2026-06-08 11:05",
       "raw_text": "ГОРИТЬ. Сьогодні до вечора треба вивантажити список усіх контрагентів з витратами понад 50к за травень, бухгалтерія просить терміново. можете швидко?",
       "status": "ok",
-      "attempts": 1,
+      "attempts": 0,
       "analysis": {
         "category": "звіт/аналітика",
         "target_department": "бухгалтерія",
@@ -145,7 +145,7 @@
         "language": "uk"
       },
       "error": null,
-      "from_cache": false
+      "from_cache": true
     },
     {
       "id": "REQ-006",
@@ -153,7 +153,7 @@
       "timestamp": "2026-06-08 11:40",
       "raw_text": "Hi team, we need a small service that takes our weekly analytics export from BigQuery and generates a short plain-language summary of the key changes week-over-week. Output ideally in a Google Doc. Хто може взятись?",
       "status": "ok",
-      "attempts": 1,
+      "attempts": 0,
       "analysis": {
         "category": "звіт/аналітика",
         "target_department": "аналітика",
@@ -173,7 +173,7 @@
         "language": "mixed"
       },
       "error": null,
-      "from_cache": false
+      "from_cache": true
     },
     {
       "id": "REQ-007",
@@ -181,7 +181,7 @@
       "timestamp": "2026-06-08 12:15",
       "raw_text": "У нас зламалась автоматизація по інвойсам з Мети — з понеділка нічого не парситься, рахунки висять. Хто це робив? треба полагодити",
       "status": "ok",
-      "attempts": 1,
+      "attempts": 0,
       "analysis": {
         "category": "баг/підтримка",
         "target_department": "фінанси",
@@ -201,7 +201,7 @@
         "language": "uk"
       },
       "error": null,
-      "from_cache": false
+      "from_cache": true
     },
     {
       "id": "REQ-008",
@@ -209,7 +209,7 @@
       "timestamp": "2026-06-08 13:02",
       "raw_text": "дякую за вчора, все працює супер 🙌",
       "status": "ok",
-      "attempts": 1,
+      "attempts": 0,
       "analysis": {
         "category": "поза скоупом",
         "target_department": null,
@@ -225,7 +225,7 @@
         "language": "uk"
       },
       "error": null,
-      "from_cache": false
+      "from_cache": true
     },
     {
       "id": "REQ-009",
@@ -233,7 +233,7 @@
       "timestamp": "2026-06-08 13:48",
       "raw_text": "Колеги, в HR хочемо прискорити первинний скринінг резюме на технічні вакансії. Ідея: завантажуємо PDF резюме, на виході — структуровані поля (досвід, стек, відповідність вимогам) і коротка оцінка. Обсяг — десь 30-50 резюме на тиждень.",
       "status": "ok",
-      "attempts": 1,
+      "attempts": 0,
       "analysis": {
         "category": "автоматизація",
         "target_department": "HR",
@@ -253,7 +253,7 @@
         "language": "uk"
       },
       "error": null,
-      "from_cache": false
+      "from_cache": true
     },
     {
       "id": "REQ-010",
@@ -261,7 +261,7 @@
       "timestamp": "2026-06-08 14:11",
       "raw_text": "Можна автоматизувати збір згадок про Netpeak в телеграм-каналах і робити дайджест раз на день? І ще окремо — алерт, якщо згадка негативна. Дві задачі по суті, але обидві про моніторинг.",
       "status": "ok",
-      "attempts": 1,
+      "attempts": 0,
       "analysis": {
         "category": "автоматизація",
         "target_department": "маркетинг",
@@ -281,7 +281,7 @@
         "language": "uk"
       },
       "error": null,
-      "from_cache": false
+      "from_cache": true
     },
     {
       "id": "REQ-011",
@@ -289,7 +289,7 @@
       "timestamp": "2026-06-08 14:55",
       "raw_text": "нам би табличку якусь",
       "status": "ok",
-      "attempts": 2,
+      "attempts": 0,
       "analysis": {
         "category": "звіт/аналітика",
         "target_department": null,
@@ -309,7 +309,7 @@
         "language": "uk"
       },
       "error": null,
-      "from_cache": false
+      "from_cache": true
     },
     {
       "id": "REQ-012",
@@ -317,7 +317,7 @@
       "timestamp": "2026-06-08 15:30",
       "raw_text": "Доброго дня! Хотіли б закупити новий потужний ноутбук для рендеру відео в SMM-відділі, бюджет до 80к. Куди подати заявку?",
       "status": "ok",
-      "attempts": 1,
+      "attempts": 0,
       "analysis": {
         "category": "поза скоупом",
         "target_department": "SMM",
@@ -335,7 +335,7 @@
         "language": "uk"
       },
       "error": null,
-      "from_cache": false
+      "from_cache": true
     },
     {
       "id": "REQ-013",
@@ -343,7 +343,7 @@
       "timestamp": "2026-06-08 16:02",
       "raw_text": "Привіт. Той самий звіт по Google Ads, що Оля просила в понеділок — мені теж дуже потрібен, я в тій же команді. Можна щоб і мені приходив?",
       "status": "ok",
-      "attempts": 1,
+      "attempts": 0,
       "analysis": {
         "category": "звіт/аналітика",
         "target_department": "маркетинг",
@@ -361,7 +361,7 @@
         "language": "uk"
       },
       "error": null,
-      "from_cache": false
+      "from_cache": true
     },
     {
       "id": "REQ-014",
@@ -369,7 +369,7 @@
       "timestamp": "2026-06-08 16:40",
       "raw_text": "є ідея, гляньте https://example.com/some-tool можливо щось схоже зробимо для нас, не горить",
       "status": "ok",
-      "attempts": 1,
+      "attempts": 0,
       "analysis": {
         "category": "питання/консультація",
         "target_department": null,
@@ -388,7 +388,7 @@
         "language": "uk"
       },
       "error": null,
-      "from_cache": false
+      "from_cache": true
     },
     {
       "id": "REQ-015",
@@ -396,7 +396,7 @@
       "timestamp": "2026-06-08 17:12",
       "raw_text": "Команда контенту просить інструмент, який з довгого інтерв'ю (текст 10-15 сторінок) робить 5 коротких постів для соцмереж у нашому tone of voice. Пріоритет середній, треба десь до кінця місяця.",
       "status": "ok",
-      "attempts": 1,
+      "attempts": 0,
       "analysis": {
         "category": "автоматизація",
         "target_department": "контент",
@@ -416,7 +416,7 @@
         "language": "uk"
       },
       "error": null,
-      "from_cache": false
+      "from_cache": true
     },
     {
       "id": "REQ-016",
@@ -424,7 +424,7 @@
       "timestamp": "2026-06-09 09:08",
       "raw_text": "чат це нормально що в ассистента по базі знань іноді відповіді не зовсім по темі? просто хочу зрозуміти це баг чи так і має бути",
       "status": "ok",
-      "attempts": 1,
+      "attempts": 0,
       "analysis": {
         "category": "баг/підтримка",
         "target_department": null,
@@ -443,7 +443,7 @@
         "language": "uk"
       },
       "error": null,
-      "from_cache": false
+      "from_cache": true
     },
     {
       "id": "REQ-017",
@@ -451,7 +451,7 @@
       "timestamp": "2026-06-09 09:50",
       "raw_text": "терміново треба інтеграція слака з планфіксом щоб задачі з каналу #support автоматом створювались тікетами. дуже багато ручної роботи зараз",
       "status": "ok",
-      "attempts": 1,
+      "attempts": 0,
       "analysis": {
         "category": "інтеграція",
         "target_department": "підтримка",
@@ -470,7 +470,7 @@
         "language": "uk"
       },
       "error": null,
-      "from_cache": false
+      "from_cache": true
     },
     {
       "id": "REQ-018",
@@ -478,7 +478,7 @@
       "timestamp": "2026-06-09 10:25",
       "raw_text": "Доброго ранку. Аналітика хоче дашборд, який раз на день підтягує дані з BigQuery і показує аномалії у витратах по підрядниках (різкі стрибки). Бажано з поясненням природною мовою, чому щось виглядає підозріло.",
       "status": "ok",
-      "attempts": 1,
+      "attempts": 0,
       "analysis": {
         "category": "звіт/аналітика",
         "target_department": "аналітика",
@@ -499,7 +499,7 @@
         "language": "uk"
       },
       "error": null,
-      "from_cache": false
+      "from_cache": true
     }
   ]
 }

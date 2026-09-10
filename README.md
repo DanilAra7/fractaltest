@@ -1,5 +1,7 @@
 # Netpeak AI Solutions — тріаж інбоксу запитів
 
+[![CI](https://github.com/DanilAra7/fractaltest/actions/workflows/ci.yml/badge.svg)](https://github.com/DanilAra7/fractaltest/actions/workflows/ci.yml)
+
 Сервіс читає `input_requests.csv` (запити від внутрішніх команд у вільній формі),
 проганяє кожен запит через LLM, валідує вивід у строгу схему і формує
 `output.json` + агрегований звіт.
@@ -57,16 +59,15 @@ python -m src.main --provider gemini
 pip install -r requirements-dev.txt && pytest -q
 ```
 
-Docker (Dockerfile написаний і пройдений вручну рядок за рядком, але жодного разу
-не збирався — деталі й чому у розділі
-[«Опціональні плюси»](#опціональні-плюси-google-sheets-telegram-docker) нижче):
+Docker (образ збирається і проганяється в [CI](#безперервна-інтеграція) на
+кожен push):
 
 ```bash
 docker build -t triage . && docker run --rm -v "$PWD/out:/app/out" triage
 ```
 
-Опціональні плюси — запис у Google Sheet і дайджест у Telegram (теж ненульова
-частина — деталі в тому ж розділі нижче):
+Запис у Google Sheet і дайджест у Telegram — потрібні креденшели з
+`.env.example`:
 
 ```bash
 pip install -r requirements-optional.txt

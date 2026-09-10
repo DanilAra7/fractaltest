@@ -25,7 +25,9 @@ import time
 import urllib.error
 import urllib.parse
 import urllib.request
+import uuid
 from datetime import datetime, timezone
+from typing import NamedTuple
 
 from pathlib import Path
 
@@ -84,6 +86,17 @@ REPORT_MISSING = (
 REPORT_CANDIDATES = ("out/gemini/output.json", "out/output.json")
 
 REPO_URL = "https://github.com/DanilAra7/fractaltest"
+
+# Файли, які бот віддає разом зі звітом: ТЗ вимагає і структурований вивід,
+# і короткий звіт з агрегатами — хай рецензент отримає обидва, не клонуючи репо.
+REPORT_FILES = ("output.json", "report.md")
+
+
+class Doc(NamedTuple):
+    """Файл, який треба надіслати в чат."""
+
+    filename: str
+    content: bytes
 
 
 class BotState:
@@ -155,6 +168,43 @@ def format_failure(result: ProcessedRequest) -> str:
     return f"Не вдалося розібрати запит: {error}"
 
 
+def _report_dir(root: Path | None = None) -> Path | None:
+    """Тека з готовими результатами прогону, або None якщо нічого немає."""
+    root = root or Path(__file__).resolve().parent.parent
+    override = os.getenv("TRIAGE_REPORT_FILE")
+    if override:
+        path = Path(override)
+        return path.parent if path.exists() else None
+    for candidate in REPORT_CANDIDATES:
+        path = root / candidate
+        if path.exists():
+            return path.parent
+    return None
+
+
+def load_report_files(root: Path | None = None) -> list[Doc]:
+    """output.json і report.md як вкладення.
+
+    ТЗ вимагає два артефакти — повний структурований вивід і короткий звіт з
+    агрегатами. Дайджест у тексті показує друге; ці файли дають обидва в тому
+    вигляді, в якому їх формує сервіс.
+    """
+    directory = _report_dir(root)
+    if directory is None:
+        return []
+
+    docs: list[Doc] = []
+    for name in REPORT_FILES:
+        path = directory / name
+        if not path.exists():
+            continue
+        try:
+            docs.append(Doc(name, path.read_bytes()))
+        except OSError as exc:
+            log.warning("не зміг прочитати %s: %s", path, exc)
+    return docs
+
+
 def load_report_digest(root: Path | None = None) -> str | None:
     """Дайджест по вже порахованому прогону — без звернень до моделі.
 
@@ -179,12 +229,15 @@ def load_report_digest(root: Path | None = None) -> str | None:
     return None
 
 
-async def build_reply(state: BotState, chat_id: int, text: str, analyze) -> list[str]:
+async def build_reply(
+    state: BotState, chat_id: int, text: str, analyze
+) -> list[str | Doc]:
     """Уся логіка відповіді. Мережі тут немає — тому це можна тестувати.
 
     `analyze` — корутина, що приймає текст і повертає ProcessedRequest.
-    Повертає список повідомлень (порожній — відповідати не треба): після
-    введення пароля їх три — вступ, звіт по датасету, запрошення до вводу.
+    Повертає список того, що треба надіслати: рядок — це текст, Doc —
+    вкладення. Після введення пароля це вступ, дайджест, два файли
+    (output.json і report.md) і запрошення до вводу.
     """
     text = (text or "").strip()
     if not text:
@@ -202,11 +255,16 @@ async def build_reply(state: BotState, chat_id: int, text: str, analyze) -> list
             expected.strip().lower().encode("utf-8"),
         ):
             state.authorize(chat_id)
-            return [UNLOCKED_INTRO, load_report_digest() or REPORT_MISSING, READY_FOR_INPUT]
+            return [
+                UNLOCKED_INTRO,
+                load_report_digest() or REPORT_MISSING,
+                *load_report_files(),
+                READY_FOR_INPUT,
+            ]
         return [WRONG_PASSWORD]
 
     if text == "/report":
-        return [load_report_digest() or REPORT_MISSING]
+        return [load_report_digest() or REPORT_MISSING, *load_report_files()]
 
     if len(text) > MAX_INPUT_CHARS:
         return [f"Задовгий текст ({len(text)} символів). Максимум {MAX_INPUT_CHARS}."]
@@ -219,7 +277,16 @@ async def build_reply(state: BotState, chat_id: int, text: str, analyze) -> list
     result = await analyze(text)
     if result.status != "ok" or result.analysis is None:
         return [format_failure(result)]
-    return [format_analysis(result.analysis)]
+
+    # Картка для людини і той самий результат у строгій схемі — щоб було видно,
+    # що бот не «переказує своїми словами», а віддає рівно те, що йде в output.json.
+    structured = json.dumps(
+        result.analysis.model_dump(mode="json"), ensure_ascii=False, indent=2
+    )
+    return [
+        format_analysis(result.analysis),
+        f"Той самий результат у структурованому вигляді:\n\n{structured}",
+    ]
 
 
 def _api_call(token: str, method: str, payload: dict, timeout: float) -> dict:
@@ -234,6 +301,45 @@ def _api_call(token: str, method: str, payload: dict, timeout: float) -> dict:
 
 async def api_call(token: str, method: str, payload: dict, timeout: float = 60.0) -> dict:
     return await asyncio.to_thread(_api_call, token, method, payload, timeout)
+
+
+def build_multipart(fields: dict[str, str], filename: str, content: bytes) -> tuple[bytes, str]:
+    """Тіло multipart/form-data для sendDocument.
+
+    Руками, бо заради одного виклику тягнути requests не хочеться — решта
+    бота теж на stdlib.
+    """
+    boundary = "----triage" + uuid.uuid4().hex
+    parts: list[bytes] = []
+    for name, value in fields.items():
+        parts.append(
+            f'--{boundary}\r\nContent-Disposition: form-data; name="{name}"\r\n\r\n'
+            f"{value}\r\n".encode("utf-8")
+        )
+    parts.append(
+        f'--{boundary}\r\nContent-Disposition: form-data; name="document"; '
+        f'filename="{filename}"\r\nContent-Type: application/octet-stream\r\n\r\n'.encode("utf-8")
+    )
+    parts.append(content)
+    parts.append(f"\r\n--{boundary}--\r\n".encode("utf-8"))
+    return b"".join(parts), f"multipart/form-data; boundary={boundary}"
+
+
+def _post_document(token: str, chat_id: int, doc: Doc, timeout: float) -> dict:
+    body, content_type = build_multipart({"chat_id": str(chat_id)}, doc.filename, doc.content)
+    url = API.format(token=token, method="sendDocument")
+    req = urllib.request.Request(
+        url, data=body, headers={"Content-Type": content_type}, method="POST"
+    )
+    with urllib.request.urlopen(req, timeout=timeout) as resp:
+        return json.loads(resp.read().decode("utf-8"))
+
+
+async def send_document(token: str, chat_id: int, doc: Doc, timeout: float = 60.0) -> None:
+    try:
+        await asyncio.to_thread(_post_document, token, chat_id, doc, timeout)
+    except (urllib.error.URLError, urllib.error.HTTPError, TimeoutError) as exc:
+        log.warning("не вдалося надіслати %s у чат %s: %s", doc.filename, chat_id, exc)
 
 
 async def send_message(token: str, chat_id: int, text: str) -> None:
@@ -319,7 +425,10 @@ async def run_bot() -> int:
                 log.exception("помилка обробки повідомлення")
                 replies = [f"Внутрішня помилка: {exc}"]
             for reply in replies:
-                await send_message(token, chat_id, reply)
+                if isinstance(reply, Doc):
+                    await send_document(token, chat_id, reply)
+                else:
+                    await send_message(token, chat_id, reply)
 
 
 def _cache_dir() -> Path:

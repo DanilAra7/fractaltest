@@ -88,7 +88,8 @@ jobs:
       - name: Прогнати образ на моці
         run: |
           mkdir -p docker-out
-          docker run --rm -v "$PWD/docker-out:/app/out" triage
+          docker run --rm -v "$PWD/docker-out:/app/out" triage \
+            python -m src.main --provider mock
 
       - name: Перевірити, що результат сформував саме контейнер
         run: |

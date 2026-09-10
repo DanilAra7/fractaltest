@@ -4,6 +4,6 @@ __pycache__/
 .pytest_cache/
 .git/
 .env
-out/
+out/.cache/
 tests/
-*.md
+/*.md

@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import asyncio
+import json
 
 import pytest
 
@@ -16,10 +17,13 @@ from src.bot import (
     UNLOCKED_INTRO,
     WRONG_PASSWORD,
     BotState,
+    Doc,
+    build_multipart,
     build_reply,
     format_analysis,
     format_failure,
     load_report_digest,
+    load_report_files,
 )
 from src.models import ProcessedRequest, RequestAnalysis
 
@@ -87,9 +91,19 @@ def parts(state, chat_id, text, result=None) -> list[str]:
     return asyncio.run(build_reply(state, chat_id, text, analyze))
 
 
+def texts(state, chat_id, text, result=None) -> list[str]:
+    """Тільки текстові повідомлення, без вкладень."""
+    return [p for p in parts(state, chat_id, text, result) if isinstance(p, str)]
+
+
+def docs(state, chat_id, text, result=None) -> list[Doc]:
+    """Тільки вкладення."""
+    return [p for p in parts(state, chat_id, text, result) if isinstance(p, Doc)]
+
+
 def reply(state, chat_id, text, result=None) -> str:
-    """Ті самі повідомлення, склеєні — зручно для перевірок 'містить'."""
-    return "\n\n".join(parts(state, chat_id, text, result))
+    """Ті самі текстові повідомлення, склеєні — зручно для перевірок 'містить'."""
+    return "\n\n".join(texts(state, chat_id, text, result))
 
 
 class TestAccessGate:
@@ -228,26 +242,26 @@ class TestReportOnUnlock:
         report.write_text(SAMPLE_RUN_JSON, encoding="utf-8")
         monkeypatch.setenv("TRIAGE_REPORT_FILE", str(report))
 
-        messages = parts(BotState(), 1, PASSWORD)
-        assert len(messages) == 3
+        messages = texts(BotState(), 1, PASSWORD)
         assert messages[0] == UNLOCKED_INTRO
         assert "Тріаж інбоксу" in messages[1]
-        assert messages[2] == READY_FOR_INPUT
+        assert messages[-1] == READY_FOR_INPUT
 
     def test_report_precedes_invitation(self, tmp_path, monkeypatch):
         report = tmp_path / "output.json"
         report.write_text(SAMPLE_RUN_JSON, encoding="utf-8")
         monkeypatch.setenv("TRIAGE_REPORT_FILE", str(report))
 
-        messages = parts(BotState(), 1, PASSWORD)
-        assert messages.index(READY_FOR_INPUT) == 2
+        messages = texts(BotState(), 1, PASSWORD)
+        # Звіт має передувати запрошенню надсилати свої запити.
+        assert messages.index(READY_FOR_INPUT) > 1
 
     def test_missing_report_does_not_break_unlock(self, tmp_path, monkeypatch):
         monkeypatch.setenv("TRIAGE_REPORT_FILE", str(tmp_path / "немає.json"))
-        messages = parts(BotState(), 1, PASSWORD)
+        messages = texts(BotState(), 1, PASSWORD)
         assert messages[1] == REPORT_MISSING
         # Доступ усе одно видано — відсутній файл не має блокувати бота.
-        assert messages[2] == READY_FOR_INPUT
+        assert messages[-1] == READY_FOR_INPUT
 
     def test_broken_report_file_does_not_crash(self, tmp_path, monkeypatch):
         report = tmp_path / "output.json"
@@ -262,10 +276,86 @@ class TestReportOnUnlock:
 
         state = BotState()
         state.authorize(1)
-        messages = parts(state, 1, "/report")
-        assert len(messages) == 1
+        messages = texts(state, 1, "/report")
         assert "Тріаж інбоксу" in messages[0]
 
     def test_report_command_needs_authorization(self, tmp_path, monkeypatch):
         monkeypatch.setenv("TRIAGE_REPORT_FILE", str(tmp_path / "output.json"))
-        assert parts(BotState(), 1, "/report") == [WRONG_PASSWORD]
+        assert texts(BotState(), 1, "/report") == [WRONG_PASSWORD]
+
+
+class TestReportAttachments:
+    """ТЗ вимагає два артефакти — структурований вивід і короткий звіт.
+    Бот має віддавати обидва, а не тільки текстовий переказ агрегатів."""
+
+    @staticmethod
+    def _prepare(tmp_path, monkeypatch, with_files=True):
+        report = tmp_path / "output.json"
+        report.write_text(SAMPLE_RUN_JSON, encoding="utf-8")
+        if with_files:
+            (tmp_path / "report.md").write_text("# Звіт\n\nагрегати", encoding="utf-8")
+        monkeypatch.setenv("TRIAGE_REPORT_FILE", str(report))
+        return report
+
+    def test_unlock_attaches_both_artifacts(self, tmp_path, monkeypatch):
+        self._prepare(tmp_path, monkeypatch)
+        attached = docs(BotState(), 1, PASSWORD)
+        assert [d.filename for d in attached] == ["output.json", "report.md"]
+
+    def test_attached_json_is_the_real_run_output(self, tmp_path, monkeypatch):
+        self._prepare(tmp_path, monkeypatch)
+        attached = docs(BotState(), 1, PASSWORD)
+        payload = json.loads(attached[0].content.decode("utf-8"))
+        assert payload["metadata"]["total_requests"] == 1
+        assert payload["results"][0]["id"] == "REQ-001"
+
+    def test_missing_report_md_does_not_block_the_rest(self, tmp_path, monkeypatch):
+        self._prepare(tmp_path, monkeypatch, with_files=False)
+        attached = docs(BotState(), 1, PASSWORD)
+        assert [d.filename for d in attached] == ["output.json"]
+
+    def test_report_command_also_attaches(self, tmp_path, monkeypatch):
+        self._prepare(tmp_path, monkeypatch)
+        state = BotState()
+        state.authorize(1)
+        assert len(docs(state, 1, "/report")) == 2
+
+    def test_no_files_when_report_missing(self, tmp_path, monkeypatch):
+        monkeypatch.setenv("TRIAGE_REPORT_FILE", str(tmp_path / "немає.json"))
+        assert load_report_files() == []
+
+
+class TestStructuredOutputForSingleRequest:
+    def test_reply_includes_valid_json_of_the_analysis(self):
+        state = BotState()
+        state.authorize(1)
+        messages = texts(state, 1, "автоматизуйте звіт")
+        assert len(messages) == 2
+        payload = json.loads(messages[1].split("\n\n", 1)[1])
+        # Рівно та сама схема, що лягає в output.json.
+        assert payload["category"] == "автоматизація"
+        assert payload["priority"] == "medium"
+        assert payload["requested_actions"] == ["Зробити звіт"]
+
+    def test_failure_has_no_json_block(self):
+        state = BotState()
+        state.authorize(1)
+        messages = texts(state, 1, "запит", failed_result("parse_error: зламано"))
+        assert len(messages) == 1
+
+
+class TestMultipart:
+    def test_contains_fields_file_and_terminator(self):
+        body, content_type = build_multipart({"chat_id": "42"}, "out.json", b'{"a":1}')
+        assert "multipart/form-data; boundary=" in content_type
+        boundary = content_type.split("boundary=")[1]
+        assert f'name="chat_id"'.encode() in body
+        assert b"42" in body
+        assert b'filename="out.json"' in body
+        assert b'{"a":1}' in body
+        assert body.endswith(f"\r\n--{boundary}--\r\n".encode())
+
+    def test_binary_content_survives_intact(self):
+        blob = bytes(range(256))
+        body, _ = build_multipart({"chat_id": "1"}, "f.bin", blob)
+        assert blob in body

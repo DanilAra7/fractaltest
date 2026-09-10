@@ -1,0 +1,505 @@
+{
+  "metadata": {
+    "provider": "mock",
+    "model": "mock-fixtures-v1",
+    "prompt_version": "v1",
+    "temperature": 0.0,
+    "started_at": "2026-09-10T12:29:54+00:00",
+    "finished_at": "2026-09-10T12:29:54+00:00",
+    "duration_seconds": 0.0,
+    "total_requests": 18,
+    "ok": 18,
+    "failed": 0
+  },
+  "results": [
+    {
+      "id": "REQ-001",
+      "channel": "Slack",
+      "timestamp": "2026-06-08 09:14",
+      "raw_text": "Привіт! Можна якось автоматизувати щотижневий звіт по Google Ads? Зараз руками вивантажую CSV і копіюю в табличку щопонеділка, займає десь годину. Треба основні метрики по кампаніях.",
+      "status": "ok",
+      "attempts": 0,
+      "analysis": {
+        "category": "звіт/аналітика",
+        "target_department": "маркетинг",
+        "priority": "medium",
+        "short_summary": "Автоматизувати щотижневий звіт по кампаніях Google Ads замість ручного вивантаження CSV щопонеділка.",
+        "requested_actions": [
+          "Автоматизувати вивантаження основних метрик по кампаніях Google Ads",
+          "Формувати зведену таблицю зі звітом щопонеділка"
+        ],
+        "needs_clarification": false,
+        "clarifying_questions": [],
+        "priority_rationale": "Регулярна ручна робота на годину щотижня, але без дедлайну і без блокера.",
+        "deadline_mentioned": null,
+        "confidence": 0.78,
+        "is_multi_request": false,
+        "language": "uk"
+      },
+      "error": null,
+      "from_cache": true
+    },
+    {
+      "id": "REQ-002",
+      "channel": "Telegram",
+      "timestamp": "2026-06-08 09:31",
+      "raw_text": "хлопці треба бот",
+      "status": "ok",
+      "attempts": 0,
+      "analysis": {
+        "category": "автоматизація",
+        "target_department": null,
+        "priority": "low",
+        "short_summary": "Запит на створення бота без будь-яких деталей щодо задачі, каналу та користувачів.",
+        "requested_actions": [],
+        "needs_clarification": true,
+        "clarifying_questions": [
+          "Яку саме задачу має вирішувати бот?",
+          "В якому каналі він має працювати — Telegram, Slack чи інде?",
+          "Хто буде кінцевими користувачами?"
+        ],
+        "priority_rationale": "Немає ні дедлайну, ні опису задачі; брати в роботу як є неможливо.",
+        "deadline_mentioned": null,
+        "confidence": 0.32,
+        "is_multi_request": false,
+        "language": "uk"
+      },
+      "error": null,
+      "from_cache": true
+    },
+    {
+      "id": "REQ-003",
+      "channel": "Email",
+      "timestamp": "2026-06-08 10:02",
+      "raw_text": "Доброго дня. У відділі продажів накопичується багато транскриптів дзвінків з клієнтами. Хочемо, щоб по кожному дзвінку автоматично формувалося коротке саммарі + список домовленостей, і це падало в PlanFix у картку угоди. Це реально?",
+      "status": "ok",
+      "attempts": 0,
+      "analysis": {
+        "category": "автоматизація",
+        "target_department": "продажі",
+        "priority": "medium",
+        "short_summary": "Автоматично формувати саммарі та список домовленостей по кожному дзвінку і записувати їх у картку угоди PlanFix.",
+        "requested_actions": [
+          "Генерувати коротке саммарі по кожному транскрипту дзвінка",
+          "Витягувати список домовленостей із розмови",
+          "Записувати результат у картку угоди в PlanFix"
+        ],
+        "needs_clarification": false,
+        "clarifying_questions": [],
+        "priority_rationale": "Чітко описана робоча задача без дедлайну; накопичення транскриптів не блокує процес.",
+        "deadline_mentioned": null,
+        "confidence": 0.82,
+        "is_multi_request": false,
+        "language": "uk"
+      },
+      "error": null,
+      "from_cache": true
+    },
+    {
+      "id": "REQ-004",
+      "channel": "Slack",
+      "timestamp": "2026-06-08 10:20",
+      "raw_text": "Питання радше теоретичне: чи можна взагалі за допомогою AI оцінювати якість наших статей у блозі перед публікацією? Поки що нічого впроваджувати не треба, просто цікаво ваша думка.",
+      "status": "ok",
+      "attempts": 0,
+      "analysis": {
+        "category": "питання/консультація",
+        "target_department": "маркетинг",
+        "priority": "low",
+        "short_summary": "Теоретичне питання про принципову можливість AI-оцінки якості статей у блозі перед публікацією.",
+        "requested_actions": [
+          "Надати експертну думку щодо можливості AI-оцінки якості статей перед публікацією"
+        ],
+        "needs_clarification": false,
+        "clarifying_questions": [],
+        "priority_rationale": "Автор прямо каже, що впроваджувати нічого не треба — це запит на думку.",
+        "deadline_mentioned": null,
+        "confidence": 0.88,
+        "is_multi_request": false,
+        "language": "uk"
+      },
+      "error": null,
+      "from_cache": true
+    },
+    {
+      "id": "REQ-005",
+      "channel": "Telegram",
+      "timestamp": "2026-06-08 11:05",
+      "raw_text": "ГОРИТЬ. Сьогодні до вечора треба вивантажити список усіх контрагентів з витратами понад 50к за травень, бухгалтерія просить терміново. можете швидко?",
+      "status": "ok",
+      "attempts": 0,
+      "analysis": {
+        "category": "звіт/аналітика",
+        "target_department": "бухгалтерія",
+        "priority": "high",
+        "short_summary": "Терміново вивантажити список контрагентів із витратами понад 50к за травень для бухгалтерії.",
+        "requested_actions": [
+          "Вивантажити список усіх контрагентів із витратами понад 50 000 за травень"
+        ],
+        "needs_clarification": false,
+        "clarifying_questions": [],
+        "priority_rationale": "Явний дедлайн сьогодні до вечора плюс маркер терміновості в тексті.",
+        "deadline_mentioned": "сьогодні до вечора",
+        "confidence": 0.9,
+        "is_multi_request": false,
+        "language": "uk"
+      },
+      "error": null,
+      "from_cache": true
+    },
+    {
+      "id": "REQ-006",
+      "channel": "Email",
+      "timestamp": "2026-06-08 11:40",
+      "raw_text": "Hi team, we need a small service that takes our weekly analytics export from BigQuery and generates a short plain-language summary of the key changes week-over-week. Output ideally in a Google Doc. Хто може взятись?",
+      "status": "ok",
+      "attempts": 0,
+      "analysis": {
+        "category": "звіт/аналітика",
+        "target_department": "аналітика",
+        "priority": "medium",
+        "short_summary": "Сервіс, який бере щотижневий експорт з BigQuery і формує стислий текстовий опис ключових змін тиждень до тижня в Google Doc.",
+        "requested_actions": [
+          "Брати щотижневий аналітичний експорт з BigQuery",
+          "Генерувати стислий опис ключових змін тиждень до тижня простою мовою",
+          "Публікувати результат у Google Doc"
+        ],
+        "needs_clarification": false,
+        "clarifying_questions": [],
+        "priority_rationale": "Звичайна робоча задача з чітким описом, без вказаного дедлайну.",
+        "deadline_mentioned": null,
+        "confidence": 0.85,
+        "is_multi_request": false,
+        "language": "mixed"
+      },
+      "error": null,
+      "from_cache": true
+    },
+    {
+      "id": "REQ-007",
+      "channel": "Slack",
+      "timestamp": "2026-06-08 12:15",
+      "raw_text": "У нас зламалась автоматизація по інвойсам з Мети — з понеділка нічого не парситься, рахунки висять. Хто це робив? треба полагодити",
+      "status": "ok",
+      "attempts": 0,
+      "analysis": {
+        "category": "баг/підтримка",
+        "target_department": "фінанси",
+        "priority": "high",
+        "short_summary": "З понеділка не працює парсинг інвойсів з Meta, рахунки не обробляються — треба полагодити.",
+        "requested_actions": [
+          "Знайти причину зупинки парсингу інвойсів з Meta",
+          "Відновити роботу автоматизації",
+          "Визначити відповідального за цю інтеграцію"
+        ],
+        "needs_clarification": false,
+        "clarifying_questions": [],
+        "priority_rationale": "Зламаний робочий процес, який триває кілька днів і блокує обробку рахунків.",
+        "deadline_mentioned": null,
+        "confidence": 0.9,
+        "is_multi_request": false,
+        "language": "uk"
+      },
+      "error": null,
+      "from_cache": true
+    },
+    {
+      "id": "REQ-008",
+      "channel": "Telegram",
+      "timestamp": "2026-06-08 13:02",
+      "raw_text": "дякую за вчора, все працює супер 🙌",
+      "status": "ok",
+      "attempts": 0,
+      "analysis": {
+        "category": "поза скоупом",
+        "target_department": null,
+        "priority": "low",
+        "short_summary": "Подяка за раніше виконану роботу, запиту не містить.",
+        "requested_actions": [],
+        "needs_clarification": false,
+        "clarifying_questions": [],
+        "priority_rationale": "Повідомлення не є запитом і не потребує дій.",
+        "deadline_mentioned": null,
+        "confidence": 0.95,
+        "is_multi_request": false,
+        "language": "uk"
+      },
+      "error": null,
+      "from_cache": true
+    },
+    {
+      "id": "REQ-009",
+      "channel": "Email",
+      "timestamp": "2026-06-08 13:48",
+      "raw_text": "Колеги, в HR хочемо прискорити первинний скринінг резюме на технічні вакансії. Ідея: завантажуємо PDF резюме, на виході — структуровані поля (досвід, стек, відповідність вимогам) і коротка оцінка. Обсяг — десь 30-50 резюме на тиждень.",
+      "status": "ok",
+      "attempts": 0,
+      "analysis": {
+        "category": "автоматизація",
+        "target_department": "HR",
+        "priority": "medium",
+        "short_summary": "Інструмент, який із PDF резюме витягує структуровані поля і дає коротку оцінку відповідності технічній вакансії.",
+        "requested_actions": [
+          "Приймати на вхід PDF резюме",
+          "Витягувати структуровані поля: досвід, стек, відповідність вимогам",
+          "Формувати коротку оцінку кандидата"
+        ],
+        "needs_clarification": false,
+        "clarifying_questions": [],
+        "priority_rationale": "Задача описана детально, з відомим обсягом 30-50 резюме на тиждень, але без дедлайну.",
+        "deadline_mentioned": null,
+        "confidence": 0.9,
+        "is_multi_request": false,
+        "language": "uk"
+      },
+      "error": null,
+      "from_cache": true
+    },
+    {
+      "id": "REQ-010",
+      "channel": "Slack",
+      "timestamp": "2026-06-08 14:11",
+      "raw_text": "Можна автоматизувати збір згадок про Netpeak в телеграм-каналах і робити дайджест раз на день? І ще окремо — алерт, якщо згадка негативна. Дві задачі по суті, але обидві про моніторинг.",
+      "status": "ok",
+      "attempts": 0,
+      "analysis": {
+        "category": "автоматизація",
+        "target_department": "маркетинг",
+        "priority": "medium",
+        "short_summary": "Збирати згадки про Netpeak у телеграм-каналах, робити щоденний дайджест і окремо алертити про негативні згадки.",
+        "requested_actions": [
+          "Налаштувати збір згадок про Netpeak у телеграм-каналах",
+          "Формувати дайджест згадок раз на день",
+          "Надсилати алерт, якщо згадка негативна"
+        ],
+        "needs_clarification": false,
+        "clarifying_questions": [],
+        "priority_rationale": "Зрозуміла задача на моніторинг без дедлайну і без блокера.",
+        "deadline_mentioned": null,
+        "confidence": 0.8,
+        "is_multi_request": true,
+        "language": "uk"
+      },
+      "error": null,
+      "from_cache": true
+    },
+    {
+      "id": "REQ-011",
+      "channel": "Telegram",
+      "timestamp": "2026-06-08 14:55",
+      "raw_text": "нам би табличку якусь",
+      "status": "ok",
+      "attempts": 0,
+      "analysis": {
+        "category": "звіт/аналітика",
+        "target_department": null,
+        "priority": "low",
+        "short_summary": "Запит на якусь таблицю без вказівки даних, користувачів і призначення.",
+        "requested_actions": [],
+        "needs_clarification": true,
+        "clarifying_questions": [
+          "Яку саме таблицю і з якими даними треба?",
+          "Хто буде нею користуватись і як часто оновлювати?",
+          "Де має жити результат — Google Sheets, BI чи щось інше?"
+        ],
+        "priority_rationale": "Текст не містить ні задачі, ні дедлайну; сам по собі не блокує нічого.",
+        "deadline_mentioned": null,
+        "confidence": 0.25,
+        "is_multi_request": false,
+        "language": "uk"
+      },
+      "error": null,
+      "from_cache": true
+    },
+    {
+      "id": "REQ-012",
+      "channel": "Email",
+      "timestamp": "2026-06-08 15:30",
+      "raw_text": "Доброго дня! Хотіли б закупити новий потужний ноутбук для рендеру відео в SMM-відділі, бюджет до 80к. Куди подати заявку?",
+      "status": "ok",
+      "attempts": 0,
+      "analysis": {
+        "category": "поза скоупом",
+        "target_department": "SMM",
+        "priority": "low",
+        "short_summary": "Питання про процедуру закупівлі ноутбука для SMM-відділу — не в компетенції AI-юніту.",
+        "requested_actions": [
+          "Підказати, куди подати заявку на закупівлю обладнання"
+        ],
+        "needs_clarification": false,
+        "clarifying_questions": [],
+        "priority_rationale": "Запит зрозумілий, але адміністративний і без дедлайну; треба переадресувати.",
+        "deadline_mentioned": null,
+        "confidence": 0.93,
+        "is_multi_request": false,
+        "language": "uk"
+      },
+      "error": null,
+      "from_cache": true
+    },
+    {
+      "id": "REQ-013",
+      "channel": "Slack",
+      "timestamp": "2026-06-08 16:02",
+      "raw_text": "Привіт. Той самий звіт по Google Ads, що Оля просила в понеділок — мені теж дуже потрібен, я в тій же команді. Можна щоб і мені приходив?",
+      "status": "ok",
+      "attempts": 0,
+      "analysis": {
+        "category": "звіт/аналітика",
+        "target_department": "маркетинг",
+        "priority": "low",
+        "short_summary": "Додати автора до отримувачів того самого щотижневого звіту по Google Ads, який уже замовила колега.",
+        "requested_actions": [
+          "Додати автора до списку отримувачів щотижневого звіту по Google Ads"
+        ],
+        "needs_clarification": false,
+        "clarifying_questions": [],
+        "priority_rationale": "Дрібне доповнення до вже наявного запиту, дедлайну немає.",
+        "deadline_mentioned": null,
+        "confidence": 0.85,
+        "is_multi_request": false,
+        "language": "uk"
+      },
+      "error": null,
+      "from_cache": true
+    },
+    {
+      "id": "REQ-014",
+      "channel": "Telegram",
+      "timestamp": "2026-06-08 16:40",
+      "raw_text": "є ідея, гляньте https://example.com/some-tool можливо щось схоже зробимо для нас, не горить",
+      "status": "ok",
+      "attempts": 0,
+      "analysis": {
+        "category": "питання/консультація",
+        "target_department": null,
+        "priority": "low",
+        "short_summary": "Ідея зробити аналог стороннього інструменту за посиланням; конкретики щодо потрібного функціоналу немає.",
+        "requested_actions": [],
+        "needs_clarification": true,
+        "clarifying_questions": [
+          "Яку саме частину функціоналу з прикладу треба відтворити?",
+          "Яку задачу всередині компанії це має вирішувати і для кого?"
+        ],
+        "priority_rationale": "Автор прямо пише, що не горить; це ідея на розгляд, а не задача.",
+        "deadline_mentioned": null,
+        "confidence": 0.58,
+        "is_multi_request": false,
+        "language": "uk"
+      },
+      "error": null,
+      "from_cache": true
+    },
+    {
+      "id": "REQ-015",
+      "channel": "Email",
+      "timestamp": "2026-06-08 17:12",
+      "raw_text": "Команда контенту просить інструмент, який з довгого інтерв'ю (текст 10-15 сторінок) робить 5 коротких постів для соцмереж у нашому tone of voice. Пріоритет середній, треба десь до кінця місяця.",
+      "status": "ok",
+      "attempts": 0,
+      "analysis": {
+        "category": "автоматизація",
+        "target_department": "контент",
+        "priority": "medium",
+        "short_summary": "Інструмент, який із довгого інтерв'ю робить 5 коротких постів для соцмереж у tone of voice компанії.",
+        "requested_actions": [
+          "Приймати на вхід текст інтерв'ю обсягом 10-15 сторінок",
+          "Генерувати 5 коротких постів для соцмереж",
+          "Дотримуватись tone of voice компанії"
+        ],
+        "needs_clarification": false,
+        "clarifying_questions": [],
+        "priority_rationale": "Автор явно назвав середній пріоритет і дедлайн до кінця місяця.",
+        "deadline_mentioned": "до кінця місяця",
+        "confidence": 0.92,
+        "is_multi_request": false,
+        "language": "uk"
+      },
+      "error": null,
+      "from_cache": true
+    },
+    {
+      "id": "REQ-016",
+      "channel": "Slack",
+      "timestamp": "2026-06-09 09:08",
+      "raw_text": "чат це нормально що в ассистента по базі знань іноді відповіді не зовсім по темі? просто хочу зрозуміти це баг чи так і має бути",
+      "status": "ok",
+      "attempts": 0,
+      "analysis": {
+        "category": "баг/підтримка",
+        "target_department": null,
+        "priority": "medium",
+        "short_summary": "Асистент по базі знань іноді відповідає не по темі; автор не розуміє, чи це баг, чи очікувана поведінка.",
+        "requested_actions": [],
+        "needs_clarification": true,
+        "clarifying_questions": [
+          "Наведіть 2-3 конкретні приклади запитів і відповідей, що були не по темі",
+          "Яка база знань підключена до асистента і коли її востаннє оновлювали?"
+        ],
+        "priority_rationale": "Можлива деградація якості робочого інструменту, але без прикладів масштаб невідомий.",
+        "deadline_mentioned": null,
+        "confidence": 0.55,
+        "is_multi_request": false,
+        "language": "uk"
+      },
+      "error": null,
+      "from_cache": true
+    },
+    {
+      "id": "REQ-017",
+      "channel": "Telegram",
+      "timestamp": "2026-06-09 09:50",
+      "raw_text": "терміново треба інтеграція слака з планфіксом щоб задачі з каналу #support автоматом створювались тікетами. дуже багато ручної роботи зараз",
+      "status": "ok",
+      "attempts": 0,
+      "analysis": {
+        "category": "інтеграція",
+        "target_department": "підтримка",
+        "priority": "high",
+        "short_summary": "Інтегрувати Slack із PlanFix, щоб повідомлення з каналу #support автоматично ставали тікетами.",
+        "requested_actions": [
+          "Налаштувати інтеграцію Slack з PlanFix",
+          "Автоматично створювати тікети з повідомлень каналу #support"
+        ],
+        "needs_clarification": false,
+        "clarifying_questions": [],
+        "priority_rationale": "Маркер терміновості плюс великий обсяг щоденної ручної роботи.",
+        "deadline_mentioned": null,
+        "confidence": 0.88,
+        "is_multi_request": false,
+        "language": "uk"
+      },
+      "error": null,
+      "from_cache": true
+    },
+    {
+      "id": "REQ-018",
+      "channel": "Email",
+      "timestamp": "2026-06-09 10:25",
+      "raw_text": "Доброго ранку. Аналітика хоче дашборд, який раз на день підтягує дані з BigQuery і показує аномалії у витратах по підрядниках (різкі стрибки). Бажано з поясненням природною мовою, чому щось виглядає підозріло.",
+      "status": "ok",
+      "attempts": 0,
+      "analysis": {
+        "category": "звіт/аналітика",
+        "target_department": "аналітика",
+        "priority": "medium",
+        "short_summary": "Щоденний дашборд на даних BigQuery, який показує аномальні стрибки витрат по підрядниках із поясненням природною мовою.",
+        "requested_actions": [
+          "Щодня підтягувати дані з BigQuery",
+          "Виявляти аномальні стрибки витрат по підрядниках",
+          "Показувати аномалії у дашборді",
+          "Генерувати пояснення природною мовою, чому витрати виглядають підозріло"
+        ],
+        "needs_clarification": false,
+        "clarifying_questions": [],
+        "priority_rationale": "Змістовна задача з чіткими вимогами, дедлайн не названий.",
+        "deadline_mentioned": null,
+        "confidence": 0.87,
+        "is_multi_request": false,
+        "language": "uk"
+      },
+      "error": null,
+      "from_cache": true
+    }
+  ]
+}

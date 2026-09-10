@@ -6,7 +6,7 @@ import csv
 from collections import Counter
 from pathlib import Path
 
-from .models import Category, ProcessedRequest, RunResult
+from .models import Category, RunResult
 
 # Поріг, нижче якого результат іде на ручне ревʼю навіть якщо він валідний.
 LOW_CONFIDENCE_THRESHOLD = 0.6

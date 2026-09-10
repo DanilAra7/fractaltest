@@ -52,6 +52,26 @@ jobs:
           print(f"OK: {m['ok']} успішних, {m['failed']} помилок, полагоджено {repaired}")
           PY
 
+      # Бот — довгоживучий процес, у CI його не піднімеш. Але можна перевірити
+      # найдешевше і найважливіше: що без ключів він виходить зі зрозумілою
+      # помилкою і кодом 2, а не падає трейсбеком і не стартує відкритим.
+      - name: Бот коректно відмовляється стартувати без ключів
+        run: |
+          set +e
+          output=$(env -u TELEGRAM_BOT_TOKEN -u TELEGRAM_ACCESS_WORD -u GEMINI_API_KEY \
+            python -m src.bot 2>&1)
+          code=$?
+          set -e
+          echo "$output"
+          if [ "$code" -ne 2 ]; then
+            echo "::error::очікувався код 2, отримано $code"
+            exit 1
+          fi
+          echo "$output" | grep -q "TELEGRAM_BOT_TOKEN" || {
+            echo "::error::немає зрозумілого повідомлення про причину"
+            exit 1
+          }
+
   docker:
     name: Docker-образ
     runs-on: ubuntu-latest

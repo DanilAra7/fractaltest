@@ -3,6 +3,8 @@ build_digest_text() чиста і тестується без реального
 
 from __future__ import annotations
 
+import sys
+
 import pytest
 
 from src.integrations.base import IntegrationError
@@ -110,9 +112,22 @@ class TestSheetsRow:
         assert row[SHEET_COLUMNS.index("requested_actions")] == "Зробити A | Зробити B"
 
 
-class TestSheetsMissingLibrary:
-    def test_raises_integration_error_not_import_error(self):
-        # У тестовому оточенні gspread не встановлено (requirements-optional.txt
-        # окремо від базових залежностей) — це і є сценарій, який має ловити main.py.
+class TestSheetsFailurePaths:
+    """Усе, що має завершитись IntegrationError, а не сирим виключенням.
+
+    Тести навмисно не залежать від того, чи встановлено gspread у поточному
+    оточенні: перша версія цього класу залежала, і зламалась рівно тоді, коли
+    gspread таки поставили з requirements-optional.txt.
+    """
+
+    def test_missing_library_raises_integration_error(self, monkeypatch):
+        # Імітуємо відсутність gspread незалежно від реального оточення:
+        # sys.modules[name] = None змушує import підняти ImportError.
+        monkeypatch.setitem(sys.modules, "gspread", None)
         with pytest.raises(IntegrationError, match="gspread"):
             write_to_google_sheet(make_result([]), "fake-id", "fake-path.json")
+
+    def test_missing_credentials_file_raises_integration_error(self):
+        pytest.importorskip("gspread")
+        with pytest.raises(IntegrationError, match="креденшелів"):
+            write_to_google_sheet(make_result([]), "fake-id", "no-such-file.json")

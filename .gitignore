@@ -2,6 +2,13 @@
 __pycache__/
 *.py[cod]
 .pytest_cache/
-.env
 out/.cache/
 .DS_Store
+
+# Секрети. ТЗ: "Ключі не комітити в репозиторій".
+.env
+service-account.json
+*-service-account.json
+credentials.json
+*.credentials.json
+gcp-*.json

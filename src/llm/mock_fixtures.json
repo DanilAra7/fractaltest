@@ -1,0 +1,367 @@
+[
+  {
+    "marker": "щотижневий звіт по Google Ads",
+    "analysis": {
+      "category": "звіт/аналітика",
+      "target_department": "маркетинг",
+      "priority": "medium",
+      "short_summary": "Автоматизувати щотижневий звіт по кампаніях Google Ads замість ручного вивантаження CSV щопонеділка.",
+      "requested_actions": [
+        "Автоматизувати вивантаження основних метрик по кампаніях Google Ads",
+        "Формувати зведену таблицю зі звітом щопонеділка"
+      ],
+      "needs_clarification": false,
+      "clarifying_questions": [],
+      "priority_rationale": "Регулярна ручна робота на годину щотижня, але без дедлайну і без блокера.",
+      "deadline_mentioned": null,
+      "confidence": 0.78,
+      "is_multi_request": false,
+      "language": "uk"
+    }
+  },
+  {
+    "marker": "хлопці треба бот",
+    "behavior": "broken_json_once",
+    "analysis": {
+      "category": "автоматизація",
+      "target_department": null,
+      "priority": "low",
+      "short_summary": "Запит на створення бота без будь-яких деталей щодо задачі, каналу та користувачів.",
+      "requested_actions": [],
+      "needs_clarification": true,
+      "clarifying_questions": [
+        "Яку саме задачу має вирішувати бот?",
+        "В якому каналі він має працювати — Telegram, Slack чи інде?",
+        "Хто буде кінцевими користувачами?"
+      ],
+      "priority_rationale": "Немає ні дедлайну, ні опису задачі; брати в роботу як є неможливо.",
+      "deadline_mentioned": null,
+      "confidence": 0.32,
+      "is_multi_request": false,
+      "language": "uk"
+    }
+  },
+  {
+    "marker": "транскриптів дзвінків",
+    "analysis": {
+      "category": "автоматизація",
+      "target_department": "продажі",
+      "priority": "medium",
+      "short_summary": "Автоматично формувати саммарі та список домовленостей по кожному дзвінку і записувати їх у картку угоди PlanFix.",
+      "requested_actions": [
+        "Генерувати коротке саммарі по кожному транскрипту дзвінка",
+        "Витягувати список домовленостей із розмови",
+        "Записувати результат у картку угоди в PlanFix"
+      ],
+      "needs_clarification": false,
+      "clarifying_questions": [],
+      "priority_rationale": "Чітко описана робоча задача без дедлайну; накопичення транскриптів не блокує процес.",
+      "deadline_mentioned": null,
+      "confidence": 0.82,
+      "is_multi_request": false,
+      "language": "uk"
+    }
+  },
+  {
+    "marker": "оцінювати якість наших статей",
+    "analysis": {
+      "category": "питання/консультація",
+      "target_department": "маркетинг",
+      "priority": "low",
+      "short_summary": "Теоретичне питання про принципову можливість AI-оцінки якості статей у блозі перед публікацією.",
+      "requested_actions": [
+        "Надати експертну думку щодо можливості AI-оцінки якості статей перед публікацією"
+      ],
+      "needs_clarification": false,
+      "clarifying_questions": [],
+      "priority_rationale": "Автор прямо каже, що впроваджувати нічого не треба — це запит на думку.",
+      "deadline_mentioned": null,
+      "confidence": 0.88,
+      "is_multi_request": false,
+      "language": "uk"
+    }
+  },
+  {
+    "marker": "контрагентів з витратами понад 50к",
+    "analysis": {
+      "category": "звіт/аналітика",
+      "target_department": "бухгалтерія",
+      "priority": "high",
+      "short_summary": "Терміново вивантажити список контрагентів із витратами понад 50к за травень для бухгалтерії.",
+      "requested_actions": [
+        "Вивантажити список усіх контрагентів із витратами понад 50 000 за травень"
+      ],
+      "needs_clarification": false,
+      "clarifying_questions": [],
+      "priority_rationale": "Явний дедлайн сьогодні до вечора плюс маркер терміновості в тексті.",
+      "deadline_mentioned": "сьогодні до вечора",
+      "confidence": 0.9,
+      "is_multi_request": false,
+      "language": "uk"
+    }
+  },
+  {
+    "marker": "BigQuery and generates",
+    "analysis": {
+      "category": "звіт/аналітика",
+      "target_department": "аналітика",
+      "priority": "medium",
+      "short_summary": "Сервіс, який бере щотижневий експорт з BigQuery і формує стислий текстовий опис ключових змін тиждень до тижня в Google Doc.",
+      "requested_actions": [
+        "Брати щотижневий аналітичний експорт з BigQuery",
+        "Генерувати стислий опис ключових змін тиждень до тижня простою мовою",
+        "Публікувати результат у Google Doc"
+      ],
+      "needs_clarification": false,
+      "clarifying_questions": [],
+      "priority_rationale": "Звичайна робоча задача з чітким описом, без вказаного дедлайну.",
+      "deadline_mentioned": null,
+      "confidence": 0.85,
+      "is_multi_request": false,
+      "language": "mixed"
+    }
+  },
+  {
+    "marker": "інвойсам з Мети",
+    "analysis": {
+      "category": "баг/підтримка",
+      "target_department": "фінанси",
+      "priority": "high",
+      "short_summary": "З понеділка не працює парсинг інвойсів з Meta, рахунки не обробляються — треба полагодити.",
+      "requested_actions": [
+        "Знайти причину зупинки парсингу інвойсів з Meta",
+        "Відновити роботу автоматизації",
+        "Визначити відповідального за цю інтеграцію"
+      ],
+      "needs_clarification": false,
+      "clarifying_questions": [],
+      "priority_rationale": "Зламаний робочий процес, який триває кілька днів і блокує обробку рахунків.",
+      "deadline_mentioned": null,
+      "confidence": 0.9,
+      "is_multi_request": false,
+      "language": "uk"
+    }
+  },
+  {
+    "marker": "дякую за вчора",
+    "analysis": {
+      "category": "поза скоупом",
+      "target_department": null,
+      "priority": "low",
+      "short_summary": "Подяка за раніше виконану роботу, запиту не містить.",
+      "requested_actions": [],
+      "needs_clarification": false,
+      "clarifying_questions": [],
+      "priority_rationale": "Повідомлення не є запитом і не потребує дій.",
+      "deadline_mentioned": null,
+      "confidence": 0.95,
+      "is_multi_request": false,
+      "language": "uk"
+    }
+  },
+  {
+    "marker": "скринінг резюме",
+    "analysis": {
+      "category": "автоматизація",
+      "target_department": "HR",
+      "priority": "medium",
+      "short_summary": "Інструмент, який із PDF резюме витягує структуровані поля і дає коротку оцінку відповідності технічній вакансії.",
+      "requested_actions": [
+        "Приймати на вхід PDF резюме",
+        "Витягувати структуровані поля: досвід, стек, відповідність вимогам",
+        "Формувати коротку оцінку кандидата"
+      ],
+      "needs_clarification": false,
+      "clarifying_questions": [],
+      "priority_rationale": "Задача описана детально, з відомим обсягом 30-50 резюме на тиждень, але без дедлайну.",
+      "deadline_mentioned": null,
+      "confidence": 0.9,
+      "is_multi_request": false,
+      "language": "uk"
+    }
+  },
+  {
+    "marker": "згадок про Netpeak",
+    "analysis": {
+      "category": "автоматизація",
+      "target_department": "маркетинг",
+      "priority": "medium",
+      "short_summary": "Збирати згадки про Netpeak у телеграм-каналах, робити щоденний дайджест і окремо алертити про негативні згадки.",
+      "requested_actions": [
+        "Налаштувати збір згадок про Netpeak у телеграм-каналах",
+        "Формувати дайджест згадок раз на день",
+        "Надсилати алерт, якщо згадка негативна"
+      ],
+      "needs_clarification": false,
+      "clarifying_questions": [],
+      "priority_rationale": "Зрозуміла задача на моніторинг без дедлайну і без блокера.",
+      "deadline_mentioned": null,
+      "confidence": 0.8,
+      "is_multi_request": true,
+      "language": "uk"
+    }
+  },
+  {
+    "marker": "нам би табличку якусь",
+    "behavior": "invalid_enum_once",
+    "analysis": {
+      "category": "звіт/аналітика",
+      "target_department": null,
+      "priority": "low",
+      "short_summary": "Запит на якусь таблицю без вказівки даних, користувачів і призначення.",
+      "requested_actions": [],
+      "needs_clarification": true,
+      "clarifying_questions": [
+        "Яку саме таблицю і з якими даними треба?",
+        "Хто буде нею користуватись і як часто оновлювати?",
+        "Де має жити результат — Google Sheets, BI чи щось інше?"
+      ],
+      "priority_rationale": "Текст не містить ні задачі, ні дедлайну; сам по собі не блокує нічого.",
+      "deadline_mentioned": null,
+      "confidence": 0.25,
+      "is_multi_request": false,
+      "language": "uk"
+    }
+  },
+  {
+    "marker": "ноутбук для рендеру",
+    "analysis": {
+      "category": "поза скоупом",
+      "target_department": "SMM",
+      "priority": "low",
+      "short_summary": "Питання про процедуру закупівлі ноутбука для SMM-відділу — не в компетенції AI-юніту.",
+      "requested_actions": [
+        "Підказати, куди подати заявку на закупівлю обладнання"
+      ],
+      "needs_clarification": false,
+      "clarifying_questions": [],
+      "priority_rationale": "Запит зрозумілий, але адміністративний і без дедлайну; треба переадресувати.",
+      "deadline_mentioned": null,
+      "confidence": 0.93,
+      "is_multi_request": false,
+      "language": "uk"
+    }
+  },
+  {
+    "marker": "Той самий звіт по Google Ads",
+    "analysis": {
+      "category": "звіт/аналітика",
+      "target_department": "маркетинг",
+      "priority": "low",
+      "short_summary": "Додати автора до отримувачів того самого щотижневого звіту по Google Ads, який уже замовила колега.",
+      "requested_actions": [
+        "Додати автора до списку отримувачів щотижневого звіту по Google Ads"
+      ],
+      "needs_clarification": false,
+      "clarifying_questions": [],
+      "priority_rationale": "Дрібне доповнення до вже наявного запиту, дедлайну немає.",
+      "deadline_mentioned": null,
+      "confidence": 0.85,
+      "is_multi_request": false,
+      "language": "uk"
+    }
+  },
+  {
+    "marker": "example.com/some-tool",
+    "analysis": {
+      "category": "питання/консультація",
+      "target_department": null,
+      "priority": "low",
+      "short_summary": "Ідея зробити аналог стороннього інструменту за посиланням; конкретики щодо потрібного функціоналу немає.",
+      "requested_actions": [],
+      "needs_clarification": true,
+      "clarifying_questions": [
+        "Яку саме частину функціоналу з прикладу треба відтворити?",
+        "Яку задачу всередині компанії це має вирішувати і для кого?"
+      ],
+      "priority_rationale": "Автор прямо пише, що не горить; це ідея на розгляд, а не задача.",
+      "deadline_mentioned": null,
+      "confidence": 0.58,
+      "is_multi_request": false,
+      "language": "uk"
+    }
+  },
+  {
+    "marker": "5 коротких постів",
+    "analysis": {
+      "category": "автоматизація",
+      "target_department": "контент",
+      "priority": "medium",
+      "short_summary": "Інструмент, який із довгого інтерв'ю робить 5 коротких постів для соцмереж у tone of voice компанії.",
+      "requested_actions": [
+        "Приймати на вхід текст інтерв'ю обсягом 10-15 сторінок",
+        "Генерувати 5 коротких постів для соцмереж",
+        "Дотримуватись tone of voice компанії"
+      ],
+      "needs_clarification": false,
+      "clarifying_questions": [],
+      "priority_rationale": "Автор явно назвав середній пріоритет і дедлайн до кінця місяця.",
+      "deadline_mentioned": "до кінця місяця",
+      "confidence": 0.92,
+      "is_multi_request": false,
+      "language": "uk"
+    }
+  },
+  {
+    "marker": "по базі знань",
+    "analysis": {
+      "category": "баг/підтримка",
+      "target_department": null,
+      "priority": "medium",
+      "short_summary": "Асистент по базі знань іноді відповідає не по темі; автор не розуміє, чи це баг, чи очікувана поведінка.",
+      "requested_actions": [],
+      "needs_clarification": true,
+      "clarifying_questions": [
+        "Наведіть 2-3 конкретні приклади запитів і відповідей, що були не по темі",
+        "Яка база знань підключена до асистента і коли її востаннє оновлювали?"
+      ],
+      "priority_rationale": "Можлива деградація якості робочого інструменту, але без прикладів масштаб невідомий.",
+      "deadline_mentioned": null,
+      "confidence": 0.55,
+      "is_multi_request": false,
+      "language": "uk"
+    }
+  },
+  {
+    "marker": "слака з планфіксом",
+    "analysis": {
+      "category": "інтеграція",
+      "target_department": "підтримка",
+      "priority": "high",
+      "short_summary": "Інтегрувати Slack із PlanFix, щоб повідомлення з каналу #support автоматично ставали тікетами.",
+      "requested_actions": [
+        "Налаштувати інтеграцію Slack з PlanFix",
+        "Автоматично створювати тікети з повідомлень каналу #support"
+      ],
+      "needs_clarification": false,
+      "clarifying_questions": [],
+      "priority_rationale": "Маркер терміновості плюс великий обсяг щоденної ручної роботи.",
+      "deadline_mentioned": null,
+      "confidence": 0.88,
+      "is_multi_request": false,
+      "language": "uk"
+    }
+  },
+  {
+    "marker": "аномалії у витратах по підрядниках",
+    "analysis": {
+      "category": "звіт/аналітика",
+      "target_department": "аналітика",
+      "priority": "medium",
+      "short_summary": "Щоденний дашборд на даних BigQuery, який показує аномальні стрибки витрат по підрядниках із поясненням природною мовою.",
+      "requested_actions": [
+        "Щодня підтягувати дані з BigQuery",
+        "Виявляти аномальні стрибки витрат по підрядниках",
+        "Показувати аномалії у дашборді",
+        "Генерувати пояснення природною мовою, чому витрати виглядають підозріло"
+      ],
+      "needs_clarification": false,
+      "clarifying_questions": [],
+      "priority_rationale": "Змістовна задача з чіткими вимогами, дедлайн не названий.",
+      "deadline_mentioned": null,
+      "confidence": 0.87,
+      "is_multi_request": false,
+      "language": "uk"
+    }
+  }
+]

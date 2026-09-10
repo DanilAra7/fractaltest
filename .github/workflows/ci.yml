@@ -1,0 +1,100 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  tests:
+    name: Тести (Python ${{ matrix.python-version }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        # Нижня межа перевірена вручну: на 3.9 pydantic не може обчислити
+        # анотацію `str | None` (PEP 604), на 3.10 усе працює.
+        python-version: ["3.10", "3.11", "3.12"]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: pip
+
+      # Ставимо рівно так, як написано в README. Якщо інструкція бреше —
+      # впаде тут, а не в рецензента на його машині.
+      - name: Залежності
+        run: pip install -r requirements-dev.txt -r requirements-optional.txt
+
+      - name: Тести
+        run: pytest -q
+
+      - name: Прогін на моці
+        run: python -m src.main --provider mock --out-dir ci-out --no-cache
+
+      - name: Перевірити вміст output.json
+        run: |
+          python - <<'PY'
+          import json
+          d = json.load(open("ci-out/output.json", encoding="utf-8"))
+          m = d["metadata"]
+          assert m["total_requests"] == 18, m
+          assert m["failed"] == 0, m
+          assert len(d["results"]) == 18, len(d["results"])
+          # Мок навмисно повертає биті відповіді на двох запитах — якщо ремонт
+          # виводу зламається, це саме те місце, де воно має спливти.
+          repaired = [r["id"] for r in d["results"] if r["attempts"] > 1]
+          assert sorted(repaired) == ["REQ-002", "REQ-011"], repaired
+          print(f"OK: {m['ok']} успішних, {m['failed']} помилок, полагоджено {repaired}")
+          PY
+
+  docker:
+    name: Docker-образ
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Зібрати образ
+        run: docker build -t triage .
+
+      # Монтуємо порожню теку, а не out/ з репозиторію: інакше перевірка нижче
+      # могла б пройти на вже закомічений output.json і не помітити, що
+      # контейнер насправді нічого не записав.
+      - name: Прогнати образ на моці
+        run: |
+          mkdir -p docker-out
+          docker run --rm -v "$PWD/docker-out:/app/out" triage
+
+      - name: Перевірити, що результат сформував саме контейнер
+        run: |
+          python - <<'PY'
+          import json
+          d = json.load(open("docker-out/output.json", encoding="utf-8"))
+          m = d["metadata"]
+          assert m["total_requests"] == 18, m
+          assert m["failed"] == 0, m
+          print(f"Контейнер відпрацював: {m['ok']} успішних за {m['duration_seconds']}с")
+          PY
+
+  secrets:
+    name: Секрети не закомічені
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      # ТЗ прямо вимагає: "Ключі не комітити в репозиторій".
+      - name: Перевірити дерево на файли з ключами
+        run: |
+          found=$(git ls-files | grep -E '(^|/)(\.env|service-account\.json|credentials\.json|gcp-.*\.json)$' || true)
+          if [ -n "$found" ]; then
+            echo "::error::У репозиторії закомічено файл із секретами:"
+            echo "$found"
+            exit 1
+          fi
+          echo "OK: файлів із ключами в дереві немає"

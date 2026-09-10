@@ -12,3 +12,8 @@ service-account.json
 credentials.json
 *.credentials.json
 gcp-*.json
+
+# Артефакти CI-прогонів (workflow пише в окремі теки, щоб не переплутати
+# результат контейнера із закоміченим out/).
+ci-out/
+docker-out/

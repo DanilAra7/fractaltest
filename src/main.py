@@ -4,11 +4,14 @@ from __future__ import annotations
 
 import argparse
 import asyncio
+import os
 import sys
 from pathlib import Path
 
 from .cache import ResponseCache
+from .integrations import IntegrationError
 from .llm import LLMError, get_provider
+from .models import RunResult
 from .pipeline import TriagePipeline, read_inbox
 from .report import build_markdown, write_csv
 
@@ -35,6 +38,14 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument(
         "--repair-attempts", type=int, default=1,
         help="Скільки разів перепитувати модель після помилки валідації",
+    )
+    parser.add_argument(
+        "--write-sheet", action="store_true",
+        help="Записати результат у Google Sheet (потрібні GOOGLE_SHEETS_*, див. .env.example)",
+    )
+    parser.add_argument(
+        "--telegram-digest", action="store_true",
+        help="Надіслати дайджест у Telegram (потрібні TELEGRAM_*, див. .env.example)",
     )
     return parser.parse_args(argv)
 
@@ -100,7 +111,51 @@ async def run(args: argparse.Namespace) -> int:
     )
     print(f"  {json_path}\n  {md_path}\n  {csv_path}")
 
+    # Опціональні плюси. Обидва йдуть уже після того, як output.json і
+    # report.md успішно записані на диск — падіння тут не повинно
+    # перетворювати вдалий прогін на провалений, тому ловимо окремо.
+    if args.write_sheet:
+        _write_sheet(result)
+    if args.telegram_digest:
+        _send_telegram_digest(result)
+
     return 1 if meta.failed else 0
+
+
+def _write_sheet(result: RunResult) -> None:
+    spreadsheet_id = os.getenv("GOOGLE_SHEETS_SPREADSHEET_ID")
+    credentials_path = os.getenv("GOOGLE_SHEETS_CREDENTIALS_FILE")
+    if not spreadsheet_id or not credentials_path:
+        print(
+            "[warn] --write-sheet задано, але GOOGLE_SHEETS_SPREADSHEET_ID / "
+            "GOOGLE_SHEETS_CREDENTIALS_FILE не задані — пропускаю"
+        )
+        return
+    try:
+        from .integrations.sheets import write_to_google_sheet
+
+        url = write_to_google_sheet(result, spreadsheet_id, credentials_path)
+        print(f"  Google Sheet оновлено: {url}")
+    except IntegrationError as exc:
+        print(f"[warn] Google Sheets: {exc}")
+
+
+def _send_telegram_digest(result: RunResult) -> None:
+    token = os.getenv("TELEGRAM_BOT_TOKEN")
+    chat_id = os.getenv("TELEGRAM_CHAT_ID")
+    if not token or not chat_id:
+        print(
+            "[warn] --telegram-digest задано, але TELEGRAM_BOT_TOKEN / "
+            "TELEGRAM_CHAT_ID не задані — пропускаю"
+        )
+        return
+    try:
+        from .integrations.telegram import send_telegram_digest
+
+        send_telegram_digest(result, token, chat_id)
+        print("  Дайджест надіслано в Telegram")
+    except IntegrationError as exc:
+        print(f"[warn] Telegram: {exc}")
 
 
 def main() -> int:

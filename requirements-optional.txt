@@ -1,0 +1,4 @@
+# Опціональні плюси з ТЗ. Base requirements.txt ними не обтяжений навмисно:
+# без --write-sheet / --telegram-digest ці бібліотеки взагалі не потрібні.
+gspread>=6.0,<7
+google-auth>=2.30

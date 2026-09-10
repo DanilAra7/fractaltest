@@ -27,9 +27,12 @@ import urllib.parse
 import urllib.request
 from datetime import datetime, timezone
 
+from pathlib import Path
+
 from .cache import ResponseCache
+from .integrations.telegram import build_digest_text
 from .llm import LLMError, get_provider
-from .models import InboxRequest, ProcessedRequest, RequestAnalysis
+from .models import InboxRequest, ProcessedRequest, RequestAnalysis, RunResult
 from .pipeline import TriagePipeline
 
 log = logging.getLogger("bot")
@@ -55,11 +58,29 @@ GREETING = (
 )
 
 WRONG_PASSWORD = "Не те слово. Спробуй ще раз."
-UNLOCKED = (
-    "Готово. Надсилай запит у вільній формі — розберу.\n\n"
-    "Наприклад: «Привіт! Можна автоматизувати щотижневий звіт по Google Ads? "
-    "Зараз руками вивантажую CSV, займає годину»."
+UNLOCKED_INTRO = (
+    "Готово.\n\n"
+    "Спочатку — те, заради чого сервіс і робився: звіт по тестовому інбоксу "
+    "(input_requests.csv, 18 запитів). Рівно ті самі агрегати, що лягають у "
+    "output.json і report.md."
 )
+
+READY_FOR_INPUT = (
+    "А тепер можна погратись: надішли будь-який свій запит у вільній формі — "
+    "розберу так само, тим самим промптом і тією самою схемою.\n\n"
+    "Наприклад: «Привіт! Можна автоматизувати щотижневий звіт по Google Ads? "
+    "Зараз руками вивантажую CSV, займає годину».\n\n"
+    "/report — показати звіт ще раз."
+)
+
+REPORT_MISSING = (
+    "Не знайшов файл зі звітом. Спочатку треба прогнати сервіс: "
+    "python -m src.main --provider gemini"
+)
+
+# Куди бот дивиться за звітом. Спершу реальний прогін моделі, потім мок —
+# щоб демо показувало Gemini, але не ламалось у чистому клоні без ключа.
+REPORT_CANDIDATES = ("out/gemini/output.json", "out/output.json")
 
 
 class BotState:
@@ -131,18 +152,43 @@ def format_failure(result: ProcessedRequest) -> str:
     return f"Не вдалося розібрати запит: {error}"
 
 
-async def build_reply(state: BotState, chat_id: int, text: str, analyze) -> str | None:
+def load_report_digest(root: Path | None = None) -> str | None:
+    """Дайджест по вже порахованому прогону — без звернень до моделі.
+
+    Звіт не перераховується на льоту навмисно: 18 запитів на безкоштовному
+    тірі Gemini — це кілька хвилин через ліміт 5/хв, а в чаті людина стільки
+    не чекатиме. Беремо готовий output.json і форматуємо тією самою
+    build_digest_text(), що й дайджест для --telegram-digest.
+    """
+    root = root or Path(__file__).resolve().parent.parent
+    override = os.getenv("TRIAGE_REPORT_FILE")
+    candidates = [Path(override)] if override else [root / c for c in REPORT_CANDIDATES]
+
+    for path in candidates:
+        if not path.exists():
+            continue
+        try:
+            result = RunResult.model_validate_json(path.read_text(encoding="utf-8"))
+        except Exception as exc:
+            log.warning("не зміг прочитати звіт %s: %s", path, exc)
+            continue
+        return build_digest_text(result)
+    return None
+
+
+async def build_reply(state: BotState, chat_id: int, text: str, analyze) -> list[str]:
     """Уся логіка відповіді. Мережі тут немає — тому це можна тестувати.
 
     `analyze` — корутина, що приймає текст і повертає ProcessedRequest.
-    Повертає текст відповіді або None, якщо відповідати не треба.
+    Повертає список повідомлень (порожній — відповідати не треба): після
+    введення пароля їх три — вступ, звіт по датасету, запрошення до вводу.
     """
     text = (text or "").strip()
     if not text:
-        return None
+        return []
 
     if text in {"/start", "/help"}:
-        return GREETING if not state.is_authorized(chat_id) else UNLOCKED
+        return [GREETING] if not state.is_authorized(chat_id) else [READY_FOR_INPUT]
 
     if not state.is_authorized(chat_id):
         expected = os.getenv("TELEGRAM_ACCESS_WORD", "")
@@ -153,21 +199,24 @@ async def build_reply(state: BotState, chat_id: int, text: str, analyze) -> str 
             expected.strip().lower().encode("utf-8"),
         ):
             state.authorize(chat_id)
-            return UNLOCKED
-        return WRONG_PASSWORD
+            return [UNLOCKED_INTRO, load_report_digest() or REPORT_MISSING, READY_FOR_INPUT]
+        return [WRONG_PASSWORD]
+
+    if text == "/report":
+        return [load_report_digest() or REPORT_MISSING]
 
     if len(text) > MAX_INPUT_CHARS:
-        return f"Задовгий текст ({len(text)} символів). Максимум {MAX_INPUT_CHARS}."
+        return [f"Задовгий текст ({len(text)} символів). Максимум {MAX_INPUT_CHARS}."]
 
     wait = state.seconds_until_allowed(chat_id)
     if wait > 0:
-        return f"Занадто часто. Спробуй за {wait:.0f} с — бережу квоту Gemini."
+        return [f"Занадто часто. Спробуй за {wait:.0f} с — бережу квоту Gemini."]
 
     state.mark_request(chat_id)
     result = await analyze(text)
     if result.status != "ok" or result.analysis is None:
-        return format_failure(result)
-    return format_analysis(result.analysis)
+        return [format_failure(result)]
+    return [format_analysis(result.analysis)]
 
 
 def _api_call(token: str, method: str, payload: dict, timeout: float) -> dict:
@@ -257,11 +306,11 @@ async def run_bot() -> int:
             if chat_id is None or text is None:
                 continue
             try:
-                reply = await build_reply(state, chat_id, text, analyze)
+                replies = await build_reply(state, chat_id, text, analyze)
             except Exception as exc:
                 log.exception("помилка обробки повідомлення")
-                reply = f"Внутрішня помилка: {exc}"
-            if reply:
+                replies = [f"Внутрішня помилка: {exc}"]
+            for reply in replies:
                 await send_message(token, chat_id, reply)
 
 

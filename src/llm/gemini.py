@@ -4,12 +4,68 @@
 from __future__ import annotations
 
 import asyncio
+import logging
 import os
 import random
 
 from .base import LLMError
 
-DEFAULT_MODEL = "gemini-2.0-flash"
+# SDK попереджає про automatic function calling при кожному виклику — ми
+# tools не передаємо, попередження нерелевантне й лише засмічує вивід.
+logging.getLogger("google_genai.models").setLevel(logging.ERROR)
+
+DEFAULT_MODEL = "gemini-3.6-flash"
+
+# Ключі, які pydantic кладе в JSON Schema, але яких немає в урізаному
+# OpenAPI-підмножині, що приймає Gemini response_schema.
+_UNSUPPORTED_KEYS = {"title", "additionalProperties", "default"}
+
+
+def to_gemini_schema(schema: dict, defs: dict | None = None) -> dict:
+    """Конвертує JSON Schema (pydantic) у формат response_schema Gemini.
+
+    Gemini не розуміє $ref/$defs, additionalProperties і anyOf — усе це
+    pydantic генерує за замовчуванням. Без конвертації API повертає
+    400 INVALID_ARGUMENT ще до першого токена генерації.
+    """
+    defs = defs if defs is not None else schema.get("$defs", {})
+
+    if "$ref" in schema:
+        ref_name = schema["$ref"].rsplit("/", 1)[-1]
+        return to_gemini_schema(defs[ref_name], defs)
+
+    # anyOf [{type: X}, {type: "null"}] (Optional[X] у pydantic) -> nullable.
+    if "anyOf" in schema:
+        variants = [to_gemini_schema(v, defs) for v in schema["anyOf"]]
+        non_null = [v for v in variants if v.get("type") != "null"]
+        has_null = len(non_null) != len(variants)
+        if len(non_null) == 1:
+            result = dict(non_null[0])
+            if has_null:
+                result["nullable"] = True
+            return result
+        # Справжній anyOf з кількох типів Gemini не підтримує — беремо перший
+        # непорожній варіант, це не наш випадок (тут лише Optional[str]).
+        result = dict(non_null[0]) if non_null else {"type": "string"}
+        if has_null:
+            result["nullable"] = True
+        return result
+
+    result: dict = {}
+    for key, value in schema.items():
+        if key in _UNSUPPORTED_KEYS or key == "$defs":
+            continue
+        if key == "properties":
+            result[key] = {k: to_gemini_schema(v, defs) for k, v in value.items()}
+        elif key == "items":
+            result[key] = to_gemini_schema(value, defs)
+        else:
+            result[key] = value
+
+    if result.get("type") == "object" and "properties" in result:
+        result.setdefault("propertyOrdering", list(result["properties"].keys()))
+
+    return result
 
 
 class GeminiProvider:
@@ -44,7 +100,7 @@ class GeminiProvider:
             system_instruction=system,
             temperature=self.temperature,
             response_mime_type="application/json",
-            response_schema=schema,
+            response_schema=to_gemini_schema(schema),
         )
 
         last_exc: Exception | None = None

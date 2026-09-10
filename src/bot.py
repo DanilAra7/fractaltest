@@ -30,6 +30,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 from .cache import ResponseCache
+from .health import HealthServer
 from .integrations.telegram import build_digest_text
 from .llm import LLMError, get_provider
 from .models import InboxRequest, ProcessedRequest, RequestAnalysis, RunResult
@@ -81,6 +82,8 @@ REPORT_MISSING = (
 # Куди бот дивиться за звітом. Спершу реальний прогін моделі, потім мок —
 # щоб демо показувало Gemini, але не ламалось у чистому клоні без ключа.
 REPORT_CANDIDATES = ("out/gemini/output.json", "out/output.json")
+
+REPO_URL = "https://github.com/DanilAra7/fractaltest"
 
 
 class BotState:
@@ -282,7 +285,12 @@ async def run_bot() -> int:
 
     state = BotState()
     me = await api_call(token, "getMe", {})
-    print(f"Бот запущений: @{me['result'].get('username')} · модель {provider.model}")
+    username = me["result"].get("username", "")
+    print(f"Бот запущений: @{username} · модель {provider.model}")
+
+    # Хостинг вважає контейнер живим лише якщо той слухає порт, а long polling
+    # жодного не слухає. Якщо порт зайнятий — не біда, бот працює й без сторінки.
+    HealthServer(username, provider.model, REPO_URL).start()
 
     offset = 0
     while True:
@@ -314,9 +322,15 @@ async def run_bot() -> int:
                 await send_message(token, chat_id, reply)
 
 
-def _cache_dir():
-    from pathlib import Path
+def _cache_dir() -> Path:
+    """Куди складати кеш відповідей.
 
+    Перекривається через TRIAGE_CACHE_DIR: на хостингу тека проєкту часто
+    доступна лише на читання, тому там кеш вішають на /tmp.
+    """
+    override = os.getenv("TRIAGE_CACHE_DIR")
+    if override:
+        return Path(override)
     return Path(__file__).resolve().parent.parent / "out" / ".cache"
 
 
